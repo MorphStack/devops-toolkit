@@ -21,7 +21,7 @@ runs:
       git push origin ${{ steps.vars.outputs.version }}
 
       # Update or create major version branch if major is defined
-      if [ -n "${{ steps.vars.outputs.major }}" ]; then
+      if [ "${{ steps.vars.outputs.major }}" != "" ]; then    
         git fetch origin
         git branch -f ${{ steps.vars.outputs.major }}
         git push origin ${{ steps.vars.outputs.major }} --force
