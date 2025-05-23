@@ -7,7 +7,7 @@ inputs:
     required: true
   major:
     description: 'The major version to be used for the branch'
-    required: true
+    required: false
 
 runs:
   using: 'composite'
@@ -20,8 +20,10 @@ runs:
       git tag ${{ steps.vars.outputs.version }}
       git push origin ${{ steps.vars.outputs.version }}
 
-      # Update or create major version branch
-      git fetch origin
-      git branch -f ${{ steps.vars.outputs.major }}
-      git push origin ${{ steps.vars.outputs.major }} --force
+      # Update or create major version branch if major is defined
+      if [ -n "${{ steps.vars.outputs.major }}" ]; then
+        git fetch origin
+        git branch -f ${{ steps.vars.outputs.major }}
+        git push origin ${{ steps.vars.outputs.major }} --force
+      fi
     shell: bash
