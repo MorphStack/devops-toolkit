@@ -1,0 +1,27 @@
+name: Tag and Release Action
+description: This action tags the release and updates the major version branch.
+
+inputs:
+  version:
+    description: 'The version to be used for the tag'
+    required: true
+  major:
+    description: 'The major version to be used for the branch'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+  - name: Tag release and update major branch
+    if: steps.vars.outputs.is_release == 'true'
+    run: |
+      git config user.name "github-actions"
+      git config user.email "github-actions@github.com"
+      git tag ${{ steps.vars.outputs.version }}
+      git push origin ${{ steps.vars.outputs.version }}
+
+      # Update or create major version branch
+      git fetch origin
+      git branch -f ${{ steps.vars.outputs.major }}
+      git push origin ${{ steps.vars.outputs.major }} --force
+    shell: bash
