@@ -15,18 +15,15 @@ runs:
     run: |
       git config user.name "github-actions"
       git config user.email "github-actions@github.com"
-      git tag -f ${{ inputs.version }}
-      git push origin ${{ inputs.version }} --force
+      git tag -f $VERSION
+      git push origin $VERSION --force
 
-      # Get current version
-      latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.1")
-      IFS='.' read -r major minor patch <<<"${latest_tag#v}"
-      IFS='.' read -r vmajor vminor vpatch <<<"${VERSION#v}"
-
-      # Update or create major version branch if major input greater than current
-      if [ ${vmajor} > ${major} ]; then    
+      # Only proceed if on main branch
+      current_branch=$(git rev-parse --abbrev-ref HEAD)
+      if [ "$current_branch" = "main" ]; then
+        IFS='.' read -r major minor patch <<<"${VERSION#v}"
         git fetch origin
-        git branch -f ${vmajor}
-        git push origin ${vmajor} --force
+        git branch -f "v${major}"
+        git push origin "v${major}" --force
       fi
     shell: bash
