@@ -47,7 +47,8 @@ runs:
         latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.1")
         IFS='.' read -r major minor patch <<<"${latest_tag#v}"
         current_version="v${major}.${minor}.${patch}"
-        echo "version=${current_version}-$SNAPSHOT_SUFFIX" >> $GITHUB_OUTPUT
+        version="${current_version}-${SNAPSHOT_SUFFIX}"
+        echo "version=${version} >> $GITHUB_OUTPUT
         echo "major=${major}" >> $GITHUB_OUTPUT
         echo "# --- Snapshot version --- #"
         echo "Snapshot version: ${version}-$SNAPSHOT_SUFFIX"
