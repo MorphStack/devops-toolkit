@@ -17,6 +17,7 @@ jobs:
         id: vars
         uses: ./.github/actions/update-version-action
         with:
+          main_branch: 'develop'
           snapshot_suffix: ${{ vars.SNAPSHOT_SUFFIX || 'SNAPSHOT' }}
         
       - name: Tag release and update major branch

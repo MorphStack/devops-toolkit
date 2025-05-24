@@ -10,6 +10,10 @@ name: Update repo version
 description: Updates the version of the repo based on the branch name and latest tag.
 
 inputs:
+  main_branch:
+    description: 'The main branch of the repository'
+    required: true
+    default: 'main'
   snapshot_suffix:
     description: 'Suffix for snapshot versions'
     required: false
@@ -27,24 +31,13 @@ runs:
     env:
       SNAPSHOT_SUFFIX: ${{ inputs.snapshot_suffix }}
     run: |
-      latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.1")
-      IFS='.' read -r major minor patch <<<"${latest_tag#v}"
-      version="v${major}.${minor}.${patch}"
-
-      if [[ "${GITHUB_REF}" == refs/heads/main ]]; then
-        if [[ "${version}" != *"-${SNAPSHOT_SUFFIX}"* ]]; then
-          # Version does not contain SNAPSHOT_SUFFIX
-          patch=$((patch+1))
-        fi
-        new_version="v${major}.${minor}.${patch}"
-        echo "version=$new_version" >> $GITHUB_OUTPUT
-        echo "# --- Release version --- #"
-        echo "Previous Version: $latest_tag"
-        echo "New version: $new_version"
+      # Check if current branch is the inputs.main_branch
+      if [[ "${GITHUB_REF}" == refs/heads/${{ inputs.main_branch }} ]]; then
+        # If on main branch, ensure the latest tag is not a snapshot version
+        latest_tag=$(git tag --sort=-v:refname | grep -v "${SNAPSHOT_SUFFIX}" | head -n 1)
+        echo "Latest tag: $latest_tag"
       else
-        # For feature branches, use snapshot 
-        snap_version=${version}-${SNAPSHOT_SUFFIX}
-        echo "version=${snap_version}" >> $GITHUB_OUTPUT
-        echo "# --- Snapshot version --- #"
-        echo "Snapshot version: $snap_version"
+        # If on a feature branch, allow snapshot versions
+        latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.1")
+        echo "Latest tag: $latest_tag"
       fi
