@@ -32,8 +32,9 @@ runs:
       version="v${major}.${minor}.${patch}"
 
       if [[ "${GITHUB_REF}" == refs/heads/main ]]; then
-        if [[ "$version" != *"-${SNAPSHOT_SUFFIX}" ]]; then
-         patch=$((patch+1))
+        if [[ "${version}" != *"-${SNAPSHOT_SUFFIX}"* ]]; then
+          # Version does not contain SNAPSHOT_SUFFIX
+          patch=$((patch+1))
         fi
         new_version="v${major}.${minor}.${patch}"
         echo "version=$new_version" >> $GITHUB_OUTPUT
