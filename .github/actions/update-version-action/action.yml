@@ -6,7 +6,7 @@
 # git tag 2.1.0
 # git push origin 2.1.0
 # To update patch version branch, nothing else is required.
-name: Update repo version
+name: Update Repo Version
 description: Updates the version of the repo based on the branch name and latest tag.
 
 inputs:
