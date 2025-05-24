@@ -13,37 +13,36 @@ inputs:
   snapshot_suffix:
     description: 'Suffix for snapshot versions'
     required: false
-    default: 'snapshot'
+    default: 'SNAPSHOT'
 outputs:
   version:
     description: 'The version to be used for the Docker image'
     value: ${{ steps.vars.outputs.version }}
-  major:
-    description: 'The major version to be used for the Docker image'
-    value: ${{ steps.vars.outputs.major }}
-  is_release:
-    description: 'Indicates if this is a release version'
-    value: ${{ steps.vars.outputs.is_release }}
 runs:
   using: 'composite'
   steps:
   - name: Set version variables
     id: vars
     shell: bash
+    env:
+      LATEST_TAG: $(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.1")
+      SNAPSHOT_SUFFIX: ${{ inputs.snapshot_suffix }}
     run: |
+      latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.1")
+      IFS='.' read -r major minor patch <<<"${latest_tag#v}"
+      version="v${major}.${minor}.${patch}"
+
       if [[ "${GITHUB_REF}" == refs/heads/main ]]; then
-        # Get latest tag, bump patch version
-        latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
-        IFS='.' read -r major minor patch <<<"${latest_tag#v}"
         patch=$((patch+1))
         new_version="v${major}.${minor}.${patch}"
         echo "version=$new_version" >> $GITHUB_OUTPUT
-        echo "major=v${major}" >> $GITHUB_OUTPUT
-        echo "is_release=true" >> $GITHUB_OUTPUT
+        echo "# --- Release version --- #"
+        echo "Previous Version: $latest_tag"
+        echo "New version: $new_version"
       else
-        # For feature branches, use snapshot version
-        branch="${GITHUB_REF#refs/heads/}"
-        echo "version=${branch}-$INPUT_SNAPSHOT_SUFFIX" >> $GITHUB_OUTPUT
-        echo "major=" >> $GITHUB_OUTPUT
-        echo "is_release=false" >> $GITHUB_OUTPUT
+        # For feature branches, use snapshot 
+        snap_version=${version}-${SNAPSHOT_SUFFIX}
+        echo "version=${snap_version}" >> $GITHUB_OUTPUT
+        echo "# --- Snapshot version --- #"
+        echo "Snapshot version: $snap_version"
       fi

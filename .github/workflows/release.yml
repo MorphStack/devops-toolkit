@@ -1,9 +1,11 @@
-name: Release workflow for DevOps Toolkit
+name: Release
 on:
   push:
     branches:
       - main
       - 'feature/*'
+    paths-ignore:
+      - '**.md'
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -15,11 +17,9 @@ jobs:
         id: vars
         uses: ./.github/actions/update-version-action
         with:
-          snapshot_suffix: ${{ vars.SNAPSHOT_SUFFIX || 'snapshot' }}
+          snapshot_suffix: ${{ vars.SNAPSHOT_SUFFIX || 'SNAPSHOT' }}
         
       - name: Tag release and update major branch
         uses: ./.github/actions/tag-and-release-action
-        if: ${{ steps.vars.outputs.is_release == 'true' }}
         with:
           version: ${{ steps.vars.outputs.version }}
-          major: ${{ steps.vars.outputs.major }}
