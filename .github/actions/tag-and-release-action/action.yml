@@ -19,9 +19,8 @@ runs:
       git tag -f ${{ inputs.version }}
       git push origin ${{ inputs.version }} --force
 
-      # Get current version
-      latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
-      IFS='.' read -r major minor patch <<<"${latest_tag#v}"
+      # Get major from version
+      major=$(echo "${{ inputs.version }}" | cut -d '.' -f 1 | cut -d 'v' -f 2) 
 
       # Update or create major version branch if major input greater than current
       if [ "${{ inputs.major }}" > ${major} ]; then    
