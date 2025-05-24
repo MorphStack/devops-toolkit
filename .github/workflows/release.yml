@@ -19,6 +19,7 @@ jobs:
         
       - name: Tag release and update major branch
         uses: ./.github/actions/tag-and-release-action
+        if: ${{ steps.vars.outputs.is_release == 'true' }}
         with:
           version: ${{ steps.vars.outputs.version }}
           major: ${{ steps.vars.outputs.major }}
