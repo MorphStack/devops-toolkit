@@ -40,10 +40,19 @@ runs:
         echo "version=$new_version" >> $GITHUB_OUTPUT
         echo "major=v${major}" >> $GITHUB_OUTPUT
         echo "is_release=true" >> $GITHUB_OUTPUT
+        echo "# --- Release version --- #"
+        echo "Latest tag: $latest_tag"
+        echo "New version: $new_version"
+        echo "Major version: v${major}"
+        echo "Is release: true"
       else
         # For feature branches, use snapshot version
         branch="${GITHUB_REF#refs/heads/}"
         echo "version=${branch}-$INPUT_SNAPSHOT_SUFFIX" >> $GITHUB_OUTPUT
         echo "major=" >> $GITHUB_OUTPUT
         echo "is_release=false" >> $GITHUB_OUTPUT
+        echo "# --- Snapshot version --- #"
+        echo "Branch: $branch"
+        echo "Snapshot version: ${branch}-$INPUT_SNAPSHOT_SUFFIX"
+        echo "Is release: false"
       fi
