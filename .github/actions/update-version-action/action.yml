@@ -40,8 +40,9 @@ runs:
         echo "Previous Version: $latest_tag"
         echo "New version: $new_version"
       else
-        # For feature branches, use snapshot version
-        echo "version=${version}-${SNAPSHOT_SUFFIX}" >> $GITHUB_OUTPUT
+        # For feature branches, use snapshot 
+        snap_version=${version}-${SNAPSHOT_SUFFIX}
+        echo "version=${snap}" >> $GITHUB_OUTPUT
         echo "# --- Snapshot version --- #"
-        echo "Snapshot version: ${version}"
+        echo "Snapshot version: $snap_version"
       fi
