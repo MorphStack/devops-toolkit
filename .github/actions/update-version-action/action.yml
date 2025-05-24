@@ -34,7 +34,7 @@ runs:
       if [[ "${GITHUB_REF}" == refs/heads/main ]]; then
         if [[ "$version" != *"-${SNAPSHOT_SUFFIX}" ]]; then
          patch=$((patch+1))
-        fiddd
+        fi
         new_version="v${major}.${minor}.${patch}"
         echo "version=$new_version" >> $GITHUB_OUTPUT
         echo "# --- Release version --- #"
