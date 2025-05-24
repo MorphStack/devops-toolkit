@@ -1,4 +1,4 @@
-name: Release workflow for DevOps Toolkit
+name: Release
 on:
   push:
     branches:
