@@ -39,5 +39,5 @@ runs:
       else
         # If on a feature branch, allow snapshot versions
         latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.1")
-        echo "Latest tag: $latest_tag"
+        echo "Latest snapshot tag: $latest_tag"
       fi
