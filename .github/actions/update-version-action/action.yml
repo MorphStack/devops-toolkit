@@ -32,7 +32,7 @@ runs:
     run: |
       if [[ "${GITHUB_REF}" == refs/heads/main ]]; then
         # Get latest tag, bump patch version
-        latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+        latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.1")
         IFS='.' read -r major minor patch <<<"${latest_tag#v}"
         patch=$((patch+1))
         new_version="v${major}.${minor}.${patch}"
@@ -44,7 +44,7 @@ runs:
         echo "Major version: v${major}"
       else
         # For feature branches, use snapshot version
-        latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+        latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.1")
         IFS='.' read -r major minor patch <<<"${latest_tag#v}"
         current_version="v${major}.${minor}.${patch}"
         echo "version=${current_version}-$SNAPSHOT_SUFFIX" >> $GITHUB_OUTPUT
