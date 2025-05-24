@@ -24,7 +24,7 @@ runs:
       IFS='.' read -r vmajor vminor vpatch <<<"${VERSION#v}"
 
       # Update or create major version branch if major input greater than current
-      if [ ${vmajor} > ${major} ]; then    
+      if [ ${vmajor} > ${major} && ${vmajor} != 0 ]; then    
         git fetch origin
         git branch -f ${vmajor}
         git push origin ${vmajor} --force
