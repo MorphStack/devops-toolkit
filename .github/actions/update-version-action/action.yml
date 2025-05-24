@@ -50,11 +50,14 @@ runs:
       else
         # For feature branches, use snapshot version
         branch="${GITHUB_REF#refs/heads/}"
-        echo "version=${branch}-$INPUT_SNAPSHOT_SUFFIX" >> $GITHUB_OUTPUT
-        echo "major=" >> $GITHUB_OUTPUT
+        latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+        IFS='.' read -r major minor patch <<<"${latest_tag#v}"
+        version="v${major}.${minor}.${patch}"
+        echo "snap_version=${version}-$SNAPSHOT_SUFFIX" >> $GITHUB_OUTPUT
+        echo "major=v${major}" >> $GITHUB_OUTPUT
         echo "is_release=false" >> $GITHUB_OUTPUT
         echo "# --- Snapshot version --- #"
         echo "Branch: $branch"
-        echo "Snapshot version: ${version}-$SNAPSHOT_SUFFIX"
+        echo "Snapshot version: ${snap_version}-$SNAPSHOT_SUFFIX"
         echo "Is release: false"
       fi
