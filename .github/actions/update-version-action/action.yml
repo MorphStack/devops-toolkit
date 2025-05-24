@@ -6,7 +6,7 @@
 # git tag 2.1.0
 # git push origin 2.1.0
 # To update patch version branch, nothing else is required.
-name: Update Repo Version
+name: Update repo version
 description: Updates the version of the repo based on the branch name and latest tag.
 
 inputs:
@@ -31,8 +31,10 @@ runs:
       IFS='.' read -r major minor patch <<<"${latest_tag#v}"
       version="v${major}.${minor}.${patch}"
 
-      if [[ "${GITHUB_REF}" == refs/heads/main && "${version}" != *"${SNAPSHOT_SUFFIX}"* ]]; then
-        patch=$((patch+1))
+      if [[ "${GITHUB_REF}" == refs/heads/main ]]; then
+        if [[ "$version" != *"-${SNAPSHOT_SUFFIX}" ]]; then
+         patch=$((patch+1))
+        fi
         new_version="v${major}.${minor}.${patch}"
         echo "version=$new_version" >> $GITHUB_OUTPUT
         echo "# --- Release version --- #"
