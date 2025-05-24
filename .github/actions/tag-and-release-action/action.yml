@@ -26,7 +26,7 @@ runs:
       # Update or create major version branch if major input greater than current
       if [ ${vmajor} > ${major} ]; then    
         git fetch origin
-        git branch -f ${{ inputs.major }}
-        git push origin ${{ inputs.major }} --force
+        git branch -f ${vmajor}
+        git push origin ${vmajor} --force
       fi
     shell: bash
