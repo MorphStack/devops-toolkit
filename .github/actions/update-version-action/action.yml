@@ -13,7 +13,7 @@ inputs:
   snapshot_suffix:
     description: 'Suffix for snapshot versions'
     required: false
-    default: 'snapshot'
+    default: 'SNAPSHOT'
 outputs:
   version:
     description: 'The version to be used for the Docker image'
@@ -26,7 +26,7 @@ runs:
     shell: bash
     env:
       LATEST_TAG: $(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.1")
-      SNAPSHOT_SUFFIX: ${{ inputs.snapshot_suffix  || 'SNAPSHOT' }}
+      SNAPSHOT_SUFFIX: ${{ inputs.snapshot_suffix }}
     run: |
       latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.1")
       IFS='.' read -r major minor patch <<<"${latest_tag#v}"
@@ -41,7 +41,7 @@ runs:
         echo "New version: $new_version"
       else
         # For feature branches, use snapshot version
-        echo "version="${version}-${SNAPSHOT_SUFFIX}" >> $GITHUB_OUTPUT
+        echo "version=${version}-${SNAPSHOT_SUFFIX}" >> $GITHUB_OUTPUT
         echo "# --- Snapshot version --- #"
         echo "Snapshot version: ${version}"
       fi
