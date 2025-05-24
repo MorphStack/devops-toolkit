@@ -30,6 +30,8 @@ runs:
   - name: Set version variables
     id: vars
     shell: bash
+    env:
+      SNAPSHOT_SUFFIX: ${{ inputs.snapshot_suffix  || 'snapshot' }}
     run: |
       if [[ "${GITHUB_REF}" == refs/heads/main ]]; then
         # Get latest tag, bump patch version
@@ -53,6 +55,6 @@ runs:
         echo "is_release=false" >> $GITHUB_OUTPUT
         echo "# --- Snapshot version --- #"
         echo "Branch: $branch"
-        echo "Snapshot version: ${branch}-$INPUT_SNAPSHOT_SUFFIX"
+        echo "Snapshot version: ${version}-$SNAPSHOT_SUFFIX"
         echo "Is release: false"
       fi
