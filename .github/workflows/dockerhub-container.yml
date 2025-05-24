@@ -48,14 +48,7 @@ jobs:
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/devops-toolkit:${{ steps.vars.outputs.version }}
 
       - name: Tag release and update major branch
-        if: steps.vars.outputs.is_release == 'true'
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git tag ${{ steps.vars.outputs.version }}
-          git push origin ${{ steps.vars.outputs.version }}
-
-          # Update or create major version branch
-          git fetch origin
-          git branch -f ${{ steps.vars.outputs.major }}
-          git push origin ${{ steps.vars.outputs.major }} --force
+        uses: ./.github/actions/tag-and-release-action
+        with:
+          version: ${{ steps.vars.outputs.version }}
+          major: ${{ steps.vars.outputs.major }}
