@@ -40,7 +40,10 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/devops-toolkit:${{ steps.vars.outputs.version }} .
+          docker buildx build \
+            --cache-from=type=local,src=/tmp/.buildx-cache \
+            --cache-to=type=local,dest=/tmp/.buildx-cache,mode=max \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/devops-toolkit:${{ steps.vars.outputs.version }} .
 
       - name: Push Docker image
         if: ${{ vars.PUBLISH_SNAPSHOT == 'true' || github.ref == 'refs/heads/main' }}
