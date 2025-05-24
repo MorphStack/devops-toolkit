@@ -42,7 +42,7 @@ runs:
       else
         # For feature branches, use snapshot 
         snap_version=${version}-${SNAPSHOT_SUFFIX}
-        echo "version=${snap}" >> $GITHUB_OUTPUT
+        echo "version=${snap_version}" >> $GITHUB_OUTPUT
         echo "# --- Snapshot version --- #"
         echo "Snapshot version: $snap_version"
       fi
