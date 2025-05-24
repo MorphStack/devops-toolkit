@@ -4,6 +4,8 @@ on:
     branches:
       - main
       - 'feature/*'
+    paths-ignore:
+      - '**.md'
 jobs:
   release:
     runs-on: ubuntu-latest
