@@ -21,9 +21,6 @@ outputs:
   major:
     description: 'The major version to be used for the Docker image'
     value: ${{ steps.vars.outputs.major }}
-  is_release:
-    description: 'Indicates if this is a release version'
-    value: ${{ steps.vars.outputs.is_release }}
 runs:
   using: 'composite'
   steps:
@@ -41,12 +38,10 @@ runs:
         new_version="v${major}.${minor}.${patch}"
         echo "version=$new_version" >> $GITHUB_OUTPUT
         echo "major=${major}" >> $GITHUB_OUTPUT
-        echo "is_release=true" >> $GITHUB_OUTPUT
         echo "# --- Release version --- #"
         echo "Latest tag: $latest_tag"
         echo "New version: $new_version"
         echo "Major version: v${major}"
-        echo "Is release: true"
       else
         # For feature branches, use snapshot version
         latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
@@ -54,8 +49,6 @@ runs:
         current_version="v${major}.${minor}.${patch}"
         echo "version=${current_version}-$SNAPSHOT_SUFFIX" >> $GITHUB_OUTPUT
         echo "major=${major}" >> $GITHUB_OUTPUT
-        echo "is_release=false" >> $GITHUB_OUTPUT
         echo "# --- Snapshot version --- #"
         echo "Snapshot version: ${snap_version}-$SNAPSHOT_SUFFIX"
-        echo "Is release: false"
       fi
