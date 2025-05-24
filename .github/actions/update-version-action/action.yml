@@ -28,7 +28,7 @@ runs:
     id: vars
     shell: bash
     env:
-      SNAPSHOT_SUFFIX: ${{ inputs.snapshot_suffix  || 'snapshot' }}
+      SNAPSHOT_SUFFIX: ${{ inputs.snapshot_suffix  || 'SNAPSHOT' }}
     run: |
       if [[ "${GITHUB_REF}" == refs/heads/main ]]; then
         # Get latest tag, bump patch version
@@ -50,5 +50,5 @@ runs:
         echo "version=${current_version}-$SNAPSHOT_SUFFIX" >> $GITHUB_OUTPUT
         echo "major=${major}" >> $GITHUB_OUTPUT
         echo "# --- Snapshot version --- #"
-        echo "Snapshot version: ${snap_version}-$SNAPSHOT_SUFFIX"
+        echo "Snapshot version: ${version}-$SNAPSHOT_SUFFIX"
       fi
