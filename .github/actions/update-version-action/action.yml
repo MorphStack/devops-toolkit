@@ -15,12 +15,12 @@ inputs:
     required: false
     default: 'snapshot'
 outputs:
+  current_version:
+    description: 'The current version of the repository'
+    value: ${{ steps.vars.outputs.current_version }}
   version:
     description: 'The version to be used for the Docker image'
     value: ${{ steps.vars.outputs.version }}
-  major:
-    description: 'The major version to be used for the Docker image'
-    value: ${{ steps.vars.outputs.major }}
 runs:
   using: 'composite'
   steps:
@@ -28,12 +28,12 @@ runs:
     id: vars
     shell: bash
     env:
+      LATEST_TAG: $(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.1")
       SNAPSHOT_SUFFIX: ${{ inputs.snapshot_suffix  || 'SNAPSHOT' }}
     run: |
       if [[ "${GITHUB_REF}" == refs/heads/main ]]; then
         # Get latest tag, bump patch version
-        latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.1")
-        IFS='.' read -r major minor patch <<<"${latest_tag#v}"
+        IFS='.' read -r major minor patch <<<"${LATEST_TAG#v}"
         patch=$((patch+1))
         new_version="v${major}.${minor}.${patch}"
         echo "version=$new_version" >> $GITHUB_OUTPUT
@@ -41,15 +41,13 @@ runs:
         echo "# --- Release version --- #"
         echo "Latest tag: $latest_tag"
         echo "New version: $new_version"
-        echo "Major version: v${major}"
       else
         # For feature branches, use snapshot version
-        latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.1")
-        IFS='.' read -r major minor patch <<<"${latest_tag#v}"
+        IFS='.' read -r major minor patch <<<"${LATEST_TAG#v}"
         current_version="v${major}.${minor}.${patch}"
         snap_version="${current_version}-${SNAPSHOT_SUFFIX}"
         echo "version=${snap_version}" >> $GITHUB_OUTPUT
-        echo "major=${major}" >> $GITHUB_OUTPUT
+        echo "current_version=${current_version}" >> $GITHUB_OUTPUT
         echo "# --- Snapshot version --- #"
         echo "Snapshot version: ${snap_version}"
       fi

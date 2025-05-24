@@ -5,25 +5,26 @@ inputs:
   version:
     description: 'The version to be used for the tag'
     required: true
-  major:
-    description: 'The major version to be used for the branch'
-    required: false
 
 runs:
   using: 'composite'
   steps:
   - name: Tag release and update major branch
+    env:
+      VERSION: ${{ inputs.version }}
     run: |
       git config user.name "github-actions"
       git config user.email "github-actions@github.com"
       git tag -f ${{ inputs.version }}
       git push origin ${{ inputs.version }} --force
 
-      # Get major from version
-      major=$(echo "${{ inputs.version }}" | cut -d '.' -f 1 | cut -d 'v' -f 2) 
+      # Get current version
+      latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.1")
+      IFS='.' read -r major minor patch <<<"${latest_tag#v}"
+      IFS='.' read -r vmajor vminor vpatch <<<"${VERSION#v}"
 
       # Update or create major version branch if major input greater than current
-      if [ "${{ inputs.major }}" > ${major} ]; then    
+      if [ ${vmajor} > ${major} ]; then    
         git fetch origin
         git branch -f ${{ inputs.major }}
         git push origin ${{ inputs.major }} --force

@@ -21,4 +21,3 @@ jobs:
         uses: ./.github/actions/tag-and-release-action
         with:
           version: ${{ steps.vars.outputs.version }}
-          major: ${{ steps.vars.outputs.major }}
