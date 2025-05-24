@@ -1,5 +1,5 @@
 name: Tag and Release Action
-description: This action tags the release and updates the major version branch.
+description: This action tags the release and optionally updates the major version branch.
 
 inputs:
   version:
@@ -19,8 +19,12 @@ runs:
       git tag ${{ inputs.version }}
       git push origin ${{ inputs.version }}
 
-      # Update or create major version branch if major is defined
-      if [ "${{ inputs.major }}" != "" ]; then    
+      # Get current version
+      latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+      IFS='.' read -r major minor patch <<<"${latest_tag#v}"
+
+      # Update or create major version branch if major input greater than current
+      if [ "${{ inputs.major }}" > ${major} ]; then    
         git fetch origin
         git branch -f ${{ inputs.major }}
         git push origin ${{ inputs.major }} --force

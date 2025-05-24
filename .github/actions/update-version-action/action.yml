@@ -40,7 +40,7 @@ runs:
         patch=$((patch+1))
         new_version="v${major}.${minor}.${patch}"
         echo "version=$new_version" >> $GITHUB_OUTPUT
-        echo "major=v${major}" >> $GITHUB_OUTPUT
+        echo "major=${major}" >> $GITHUB_OUTPUT
         echo "is_release=true" >> $GITHUB_OUTPUT
         echo "# --- Release version --- #"
         echo "Latest tag: $latest_tag"
@@ -49,15 +49,13 @@ runs:
         echo "Is release: true"
       else
         # For feature branches, use snapshot version
-        branch="${GITHUB_REF#refs/heads/}"
         latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
         IFS='.' read -r major minor patch <<<"${latest_tag#v}"
-        version="v${major}.${minor}.${patch}"
-        echo "snap_version=${version}-$SNAPSHOT_SUFFIX" >> $GITHUB_OUTPUT
-        echo "major=v${major}" >> $GITHUB_OUTPUT
+        current_version="v${major}.${minor}.${patch}"
+        echo "version=${current_version}-$SNAPSHOT_SUFFIX" >> $GITHUB_OUTPUT
+        echo "major=${major}" >> $GITHUB_OUTPUT
         echo "is_release=false" >> $GITHUB_OUTPUT
         echo "# --- Snapshot version --- #"
-        echo "Branch: $branch"
         echo "Snapshot version: ${snap_version}-$SNAPSHOT_SUFFIX"
         echo "Is release: false"
       fi
