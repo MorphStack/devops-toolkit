@@ -40,6 +40,6 @@ runs:
         # For feature branches, use snapshot version
         branch="${GITHUB_REF#refs/heads/}"
         echo "version=${branch}-$INPUT_SNAPSHOT_SUFFIX" >> $GITHUB_OUTPUT
-        echo "major=''" >> $GITHUB_OUTPUT
+        echo "major=" >> $GITHUB_OUTPUT
         echo "is_release=false" >> $GITHUB_OUTPUT
       fi
